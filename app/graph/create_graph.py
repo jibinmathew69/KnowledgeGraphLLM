@@ -2,6 +2,7 @@ from langchain_core.documents.base import Document
 from langchain_community.graphs.graph_document import GraphDocument
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.language_models import BaseChatModel
 from typing import List
 
 
@@ -69,7 +70,7 @@ def _graph_maker_prompt():
     )
 
 
-def create_graph(text_chunks: List[Document]) -> List[GraphDocument]:
+def create_graph(text_chunks: List[Document], llm: BaseChatModel) -> List[GraphDocument]:
     """
     Create a graph from a list of text chunks.
 
@@ -80,4 +81,9 @@ def create_graph(text_chunks: List[Document]) -> List[GraphDocument]:
         List[GraphDocument]: List of GraphDocument objects
     """
 
-    graph_maker = LLMGraphTransformer()
+    graph_prompt = _graph_maker_prompt()
+    graph_maker = LLMGraphTransformer(llm=llm, node_properties=True, relationship_properties=True, strict_mode=True, prompt=graph_prompt)
+
+    graph_documents = graph_maker.convert_to_graph_documents(text_chunks)
+
+    return graph_documents
