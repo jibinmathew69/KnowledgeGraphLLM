@@ -1,1 +1,1 @@
-from .graph_embedding import create_embedding, get_qa_chain, get_answer
+from .graph_embedding import create_embedding, get_qa_chain as embedding_qa_chain, get_answer as embedding_answer
