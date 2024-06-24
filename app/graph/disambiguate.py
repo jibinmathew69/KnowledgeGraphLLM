@@ -1,4 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.pydantic_v1 import BaseModel, Field
+from typing import List
 
 def _disambiguation_prompt():
     """
@@ -36,3 +38,15 @@ def _disambiguation_prompt():
             ),
         ]
     )
+
+
+
+class DisambiguatedNode(BaseModel):
+    """Get the node name and id from the collection of nodes"""
+    name: str = Field(..., title="Disambiquated name for the entity")
+    id: int = Field(..., title="Disambiquated id for the entity")
+
+class DisambiguatedNodeList(BaseModel):
+    """Get the node name and id from the collection of nodes"""
+    nodes: List[DisambiguatedNode] = Field(..., title="List of disambiguated nodes")
+
