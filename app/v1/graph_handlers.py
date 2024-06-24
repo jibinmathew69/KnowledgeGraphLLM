@@ -1,10 +1,11 @@
 import os
 import uuid
 from fastapi import HTTPException
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_anthropic import ChatAnthropic
 from ..text_parser import chunk_pdf
 from ..graph import create_graph, write_graph, disambiguate
+from ..embedding import create_embedding
 
 
 def write_files_to_disk(files_contents):
@@ -44,12 +45,18 @@ async def create_graph_handler(file_locations, model):
         for file in file_locations:
             text_chunks.extend(chunk_pdf(file))        
     except ValueError as e:
-        raise HTTPException(status_code=400, detail="Failed to load pdf files")
-
-    graph_documents = await create_graph(text_chunks[:2], llm) # TODO: remove slicing
+        raise HTTPException(status_code=400, detail="Failed to load pdf files {e}")
+    
+    graph_documents = await create_graph(text_chunks[:5], llm) # TODO: remove slicing
     
     graph, _ = write_graph(graph_documents)
 
     disambiguated_graph = disambiguate(graph, llm)
 
-    return disambiguated_graph
+    embedding_llm = OpenAIEmbeddings()
+
+    embedding_db = create_embedding(text_chunks[:5], embedding_llm) # TODO: remove slicing
+
+    return {
+        "success": True
+    }
