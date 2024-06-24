@@ -1,6 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
-from typing import List, Optional, Union
+from typing import List, Optional
 from .graph_validators import Model, PdfURLs, parse_urls_form, validate_files
+from .graph_handlers import write_files_to_disk
 
 
 graph_router = APIRouter()
@@ -18,19 +19,18 @@ async def create_graph(
     if not files and (not urls):
         raise HTTPException(status_code=400, detail="Either files or urls must be provided")
 
-    
-    processed_files = []
-    processed_urls = []
+    file_locations = []
 
     if files:
-        processed_files = await validate_files(files)
+        files_content = await validate_files(files)
+        file_paths = write_files_to_disk(files_content)
+        file_locations.extend(file_paths)
 
     if urls:
-        processed_urls = [str(url) for url in urls.urls]
+        file_urls = [str(url) for url in urls.urls]
+        file_locations.extend(file_urls)
+    
 
     return {
-        "message": "Graph created successfully",
-        "processed_files": processed_files,
-        "processed_urls": processed_urls,
-        "model": model,
+        "file_locations": file_locations,
     }
