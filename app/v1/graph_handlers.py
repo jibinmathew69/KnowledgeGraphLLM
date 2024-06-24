@@ -4,8 +4,10 @@ from fastapi import HTTPException
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_anthropic import ChatAnthropic
 from ..text_parser import chunk_pdf
-from ..graph import create_graph, write_graph, disambiguate
-from ..embedding import create_embedding
+from ..graph import create_graph, write_graph, disambiguate, graph_qa_chain, graph_answer
+from ..embedding import create_embedding, embedding_qa_chain, embedding_answer
+from langchain_community.graphs import Neo4jGraph
+from .graph_validators import Model
 
 
 def write_files_to_disk(files_contents):
@@ -60,3 +62,36 @@ async def create_graph_handler(file_locations, model):
     return {
         "success": True
     }
+
+
+async def get_answer(query: str, model: Model):
+    model = model.value
+    if model.startswith("claude"):
+        llm = ChatAnthropic(
+            model=model,
+            temperature=0,
+            max_tokens=4096,
+            max_retries=2,
+        )
+    else:
+        llm = ChatOpenAI(
+            model=model, 
+            temperature=0
+        )
+
+    graph = Neo4jGraph()
+
+    graph_chain = graph_qa_chain(llm, graph)
+    embedding_chain = embedding_qa_chain(llm, graph)
+
+    graph_result = graph_answer(graph_chain, query)    
+    embedding_result = embedding_answer(embedding_chain, query)
+
+    return {
+        "success": True,
+        "result": {
+            "graph": graph_result,
+            "embedding": embedding_result
+        }
+    }
+
