@@ -50,3 +50,9 @@ class DisambiguatedNodeList(BaseModel):
     """Get the node name and id from the collection of nodes"""
     nodes: List[DisambiguatedNode] = Field(..., title="List of disambiguated nodes")
 
+def get_node_names(graph):
+    """
+    Get the node names from the graph
+    """
+    node_names = graph.query("MATCH (n) WHERE NOT n:Chunk RETURN n.name as name")
+    node_names_list = [name["name"] for name in node_names]
