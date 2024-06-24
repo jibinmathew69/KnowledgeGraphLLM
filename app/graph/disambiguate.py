@@ -11,7 +11,7 @@ def _disambiguation_prompt():
     """
 
     system_prompt = """
-    Act as a entity disambiugation tool and tell me which values reference the same entity. 
+    Act as a graph entity disambiugation tool and tell me which values reference the same entity. 
     For example if I give you
 
     Birds
@@ -25,6 +25,8 @@ def _disambiguation_prompt():
     Ant, 2
 
     As the Bird and Birds values have the same integer assigned to them, it means that they reference the same entity.
+    Don't be too aggressive in merging nodes, only merge nodes that are clearly the same entity eg. Mango, Mangifera Indica and Mangoes can be merged 
+    but dont merge Mango leaf and Mango as they may represent specific information.
 
     """
 
@@ -102,7 +104,7 @@ def rename_nodes(graph, mapped_nodes):
         "mapping": mapped_nodes
     })
 
-def merge_nodes(graph, mapped_nodes):
+def merge_nodes(graph):
     """
     Merge the nodes in the graph
     """
