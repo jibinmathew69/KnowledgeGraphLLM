@@ -38,7 +38,7 @@ async def parse_urls_form(urls: str = Form(None)):
 
 
 async def validate_files(files: List[UploadFile]):
-    processed_files = []
+    file_contents = []
     for file in files:
         if file.content_type != "application/pdf":
             raise HTTPException(
@@ -52,6 +52,6 @@ async def validate_files(files: List[UploadFile]):
                 detail=f"File {file.filename} exceeds maximum size of 10 MB",
             )
 
-        processed_files.append(file.filename)
+        file_contents.append(content)
 
-    return processed_files
+    return file_contents
