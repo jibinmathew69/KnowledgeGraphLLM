@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from dotenv import load_dotenv
 import os
+from app.v1 import router as v1_router
+
+
 load_dotenv()
 
 required_env_vars = [
@@ -17,6 +20,8 @@ for var in required_env_vars:
         exit(1)
 
 app = FastAPI()
+
+app.include_router(v1_router, prefix="/v1", tags=["v1"])
 
 @app.get("/status")
 async def read_root():
