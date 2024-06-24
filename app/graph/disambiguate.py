@@ -102,6 +102,21 @@ def rename_nodes(graph, mapped_nodes):
         "mapping": mapped_nodes
     })
 
+def merge_nodes(graph, mapped_nodes):
+    """
+    Merge the nodes in the graph
+    """
+    node_merge_cypher = """
+    MATCH (n)
+    WHERE NOT 'Chunk' IN labels(n)
+    WITH n.name as nodeId, collect(n) as nodes
+    CALL apoc.refactor.mergeNodes(nodes, {properties: "combine", mergeRels: true})
+    YIELD node
+    RETURN node;
+    """
+
+    return graph.query(node_merge_cypher)
+
 
 def disambiguate(graph: Neo4jGraph, llm: BaseChatModel):
     """
