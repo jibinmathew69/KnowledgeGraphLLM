@@ -84,8 +84,12 @@ def get_cluster(disambiguated_response):
     for cluster_name, cluster_id in node_clusters:
         mapped_nodes.append([cluster_name,cluster_map[cluster_id]])
 
+    return mapped_nodes
 
-def disambiguate_nodes(graph: Neo4jGraph, llm: BaseChatModel):
+
+
+
+def disambiguate(graph: Neo4jGraph, llm: BaseChatModel):
     """
     Disambiguate the nodes in the graph
     """
@@ -98,3 +102,6 @@ def disambiguate_nodes(graph: Neo4jGraph, llm: BaseChatModel):
     disambiguated_response = disambiguation_chain.invoke(
         {"input": "\n".join(node_names)}
     )
+
+    cluster = get_cluster(disambiguated_response)
+
