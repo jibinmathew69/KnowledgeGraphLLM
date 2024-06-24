@@ -12,12 +12,14 @@ def chunk_pdf(pdf_path: str):
     Returns:
         List[Document]: List of Document objects, each representing a text chunks in the PDF
     """
+    try:
+        pdf_loader = PyPDFLoader(pdf_path)
+        if not pdf_loader:
+            raise ValueError(f"Invalid PDF file: {pdf_path}")
 
-    pdf_loader = PyPDFLoader(pdf_path)
-    if not pdf_loader:
-        raise ValueError(f"Invalid PDF file: {pdf_path}")
-
-    docs = pdf_loader.load()
+        docs = pdf_loader.load()
+    except Exception as e:
+        raise ValueError(f"Failed to load PDF file: {pdf_path}, {e}")
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=100)
     text_chunks = text_splitter.split_documents(docs)

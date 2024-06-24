@@ -2,6 +2,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from typing import List, Optional
 from .graph_validators import Model, PdfURLs, parse_urls_form, validate_files
 from .graph_handlers import write_files_to_disk
+from .graph_handlers import create_graph_handler
 
 
 graph_router = APIRouter()
@@ -30,7 +31,4 @@ async def create_graph(
         file_urls = [str(url) for url in urls.urls]
         file_locations.extend(file_urls)
     
-
-    return {
-        "file_locations": file_locations,
-    }
+    return create_graph_handler(file_locations, model)
