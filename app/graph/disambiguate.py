@@ -87,6 +87,20 @@ def get_cluster(disambiguated_response):
     return mapped_nodes
 
 
+def rename_nodes(graph, mapped_nodes):
+    """
+    Rename the nodes in the graph
+    """
+    node_rename_cypher = """
+    UNWIND $mapping as pair
+    MATCH (n {name: pair[0]})
+    SET n.name = pair[1]
+    """
+
+
+    graph.query(node_rename_cypher,{
+        "mapping": mapped_nodes
+    })
 
 
 def disambiguate(graph: Neo4jGraph, llm: BaseChatModel):
