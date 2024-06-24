@@ -63,6 +63,7 @@ def get_node_names(graph):
     """
     node_names = graph.query("MATCH (n) WHERE NOT n:Chunk RETURN n.name as name")
     node_names_list = [name["name"] for name in node_names]
+    node_names_list = [name for name in node_names_list if name is not None]
     return node_names_list
 
 
