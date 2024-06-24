@@ -63,5 +63,5 @@ def test_graph_document(graph_document):
 
 @pytest.mark.usefixtures("clear_db")
 def test_write_graph(graph_document):
-    result = write_graph(graph_document)
-    assert len(result["node_props"]) > 1, "No nodes were created"
+    graph, schema = write_graph(graph_document)
+    assert len(schema["node_props"]) > 1, "No nodes were created"

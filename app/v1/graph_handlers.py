@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from ..text_parser import chunk_pdf
+from ..graph import create_graph, write_graph, disambiguate
 
 
 def write_files_to_disk(files_contents):
@@ -45,4 +46,10 @@ def create_graph_handler(file_locations, model):
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Failed to load pdf files")
 
-    return len(text_chunks)
+    graph_documents = create_graph(text_chunks[:2], llm) # TODO: remove slicing
+    
+    graph, _ = write_graph(graph_documents)
+
+    disambiguated_graph = disambiguate(graph, llm)
+
+    return disambiguated_graph

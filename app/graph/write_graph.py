@@ -16,4 +16,4 @@ def write_graph(graph_documents: List[GraphDocument]):
     graph.add_graph_documents(graph_documents)
     graph.refresh_schema()
 
-    return graph.structured_schema
+    return graph, graph.structured_schema
