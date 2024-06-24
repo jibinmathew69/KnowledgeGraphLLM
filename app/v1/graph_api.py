@@ -1,8 +1,9 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from typing import List, Optional
 from .graph_validators import Model, PdfURLs, parse_urls_form, validate_files
-from .graph_handlers import write_files_to_disk
-from .graph_handlers import create_graph_handler
+from .graph_handlers import write_files_to_disk, create_graph_handler
+from .graph_handlers import get_answer
+
 
 
 graph_router = APIRouter()
@@ -31,5 +32,17 @@ async def create_graph(
         file_urls = [str(url) for url in urls.urls]
         file_locations.extend(file_urls)
     
-    result = await create_graph_handler(file_locations, model)
+    result = await create_graph_handler(file_locations, model)    
     return result
+
+
+@graph_router.post("/ask")
+async def ask(
+    query: str = Form(..., description="Query to ask"),
+    model: Model = Form(..., description="Model to use for answering the query"),
+):
+    """
+    Get answer from the graph
+    """
+    
+    return get_answer(query, model)
