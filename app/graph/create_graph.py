@@ -70,7 +70,7 @@ def _graph_maker_prompt():
     )
 
 
-def create_graph(text_chunks: List[Document], llm: BaseChatModel) -> List[GraphDocument]:
+async def create_graph(text_chunks: List[Document], llm: BaseChatModel) -> List[GraphDocument]:
     """
     Create a graph from a list of text chunks.
 
@@ -84,6 +84,6 @@ def create_graph(text_chunks: List[Document], llm: BaseChatModel) -> List[GraphD
     graph_prompt = _graph_maker_prompt()
     graph_maker = LLMGraphTransformer(llm=llm, node_properties=True, relationship_properties=True, strict_mode=True, prompt=graph_prompt)
 
-    graph_documents = graph_maker.convert_to_graph_documents(text_chunks)
+    graph_documents = await graph_maker.aconvert_to_graph_documents(text_chunks)
 
     return graph_documents

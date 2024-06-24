@@ -31,4 +31,4 @@ async def create_graph(
         file_urls = [str(url) for url in urls.urls]
         file_locations.extend(file_urls)
     
-    return create_graph_handler(file_locations, model)
+    return await create_graph_handler(file_locations, model)

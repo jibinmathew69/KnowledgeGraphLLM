@@ -22,7 +22,7 @@ def write_files_to_disk(files_contents):
     return file_paths
 
 
-def create_graph_handler(file_locations, model):
+async def create_graph_handler(file_locations, model):
 
     model = model.value    
     if model.startswith("claude"):
@@ -46,7 +46,7 @@ def create_graph_handler(file_locations, model):
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Failed to load pdf files")
 
-    graph_documents = create_graph(text_chunks[:2], llm) # TODO: remove slicing
+    graph_documents = await create_graph(text_chunks[:2], llm) # TODO: remove slicing
     
     graph, _ = write_graph(graph_documents)
 
