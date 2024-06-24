@@ -1,4 +1,8 @@
 from langchain_core.prompts import PromptTemplate
+from langchain.chains import GraphCypherQAChain
+from langchain_core.language_models import BaseChatModel
+from langchain_community.graphs import Neo4jGraph
+
 
 def _get_qa_prompt():
     QA_CYPHER_GENERATION_TEMPLATE = """Task: Generate a Cypher statement to query a graph database.
@@ -21,3 +25,12 @@ def _get_qa_prompt():
         input_variables=["schema", "question"], template=QA_CYPHER_GENERATION_TEMPLATE
     )
 
+
+def get_qa_chain(llm: BaseChatModel, graph: Neo4jGraph):
+    return GraphCypherQAChain.from_llm(
+        llm=llm,
+        graph=graph,
+        verbose=True,
+        cypher_prompt=_get_qa_prompt(),
+        validate=True,
+    )
