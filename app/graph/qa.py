@@ -34,3 +34,7 @@ def get_qa_chain(llm: BaseChatModel, graph: Neo4jGraph):
         cypher_prompt=_get_qa_prompt(),
         validate=True,
     )
+
+
+def get_answer(qa_chain: GraphCypherQAChain, query: str):
+    return qa_chain.invoke(query)
