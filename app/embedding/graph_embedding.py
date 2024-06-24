@@ -19,5 +19,5 @@ def get_qa_chain(llm: BaseChatModel, db: Neo4jVector):
         retriever=db.as_retriever()
     )
 
-def get_answer(embedded_db: Neo4jVector, query: str):
-    return embedded_db.invoke(query)
+def get_answer(embedding_chain: RetrievalQA, query: str):
+    return embedding_chain.invoke(query)
