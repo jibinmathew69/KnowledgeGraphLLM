@@ -72,7 +72,7 @@ def _get_cluster_map(node_clusters):
     for cluster_name, cluster_id in node_clusters:
         if cluster_id not in cluster_map:
             cluster_map[cluster_id] = cluster_name.capitalize()
-
+    return cluster_map
 
 def get_cluster(disambiguated_response):
     """
