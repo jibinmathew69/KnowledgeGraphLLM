@@ -30,7 +30,7 @@ def _graph_maker_prompt():
         "like 'mathematician' or 'scientist'."
         "- **Node IDs**: Never utilize integers as node IDs. Node IDs should be "
         "names or human-readable identifiers found in the text.\n"
-        "- **Node Names**: Create a **name** property for each node it should be names, or human-readable identifiers found in the text.\n"
+        "- **Node Names**: STRICTLY Create a **name** property for each node it should be names, or human-readable identifiers found in the text.\n"
         "- **Relationships** represent connections between entities or concepts.\n"
         "Ensure consistency and generality in relationship types when constructing "
         "knowledge graphs. Instead of using specific and momentary types "
