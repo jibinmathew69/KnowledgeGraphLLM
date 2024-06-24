@@ -136,3 +136,5 @@ def disambiguate(graph: Neo4jGraph, llm: BaseChatModel):
 
     cluster = get_cluster(disambiguated_response)
 
+    rename_nodes(graph, cluster)
+    return merge_nodes(graph)
