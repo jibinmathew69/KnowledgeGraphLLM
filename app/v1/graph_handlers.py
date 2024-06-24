@@ -7,6 +7,7 @@ from ..text_parser import chunk_pdf
 from ..graph import create_graph, write_graph, disambiguate, graph_qa_chain, graph_answer
 from ..embedding import create_embedding, embedding_qa_chain, embedding_answer
 from langchain_community.graphs import Neo4jGraph
+from langchain_community.vectorstores import Neo4jVector
 from .graph_validators import Model
 
 
@@ -49,14 +50,13 @@ async def create_graph_handler(file_locations, model):
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Failed to load pdf files {e}")
     
-    graph_documents = await create_graph(text_chunks[:5], llm) # TODO: remove slicing
+    graph_documents = await create_graph(text_chunks[:3], llm) # TODO: remove slicing
     
     graph, _ = write_graph(graph_documents)
 
     disambiguated_graph = disambiguate(graph, llm)
 
     embedding_llm = OpenAIEmbeddings()
-
     embedding_db = create_embedding(text_chunks[:5], embedding_llm) # TODO: remove slicing
 
     return {
@@ -64,7 +64,7 @@ async def create_graph_handler(file_locations, model):
     }
 
 
-async def get_answer(query: str, model: Model):
+def get_answer(query: str, model: Model):
     model = model.value
     if model.startswith("claude"):
         llm = ChatAnthropic(
@@ -80,9 +80,13 @@ async def get_answer(query: str, model: Model):
         )
 
     graph = Neo4jGraph()
+    embedding_db = Neo4jVector.from_existing_index(
+        OpenAIEmbeddings(),
+        "Chunk"  
+    )
 
     graph_chain = graph_qa_chain(llm, graph)
-    embedding_chain = embedding_qa_chain(llm, graph)
+    embedding_chain = embedding_qa_chain(llm, embedding_db)
 
     graph_result = graph_answer(graph_chain, query)    
     embedding_result = embedding_answer(embedding_chain, query)
@@ -90,8 +94,8 @@ async def get_answer(query: str, model: Model):
     return {
         "success": True,
         "result": {
-            "graph": graph_result,
-            "embedding": embedding_result
+            "graph": graph_result["result"],
+            "embedding": embedding_result["result"]
         }
     }
 
