@@ -8,7 +8,7 @@ from langchain_core.language_models import BaseChatModel
 
 def create_embedding(text_chunks: Document, embedding: Embeddings):
     embedded_db = Neo4jVector.from_documents(
-        text_chunks, OpenAIEmbeddings()
+        text_chunks, embedding
     )
 
     return embedded_db
