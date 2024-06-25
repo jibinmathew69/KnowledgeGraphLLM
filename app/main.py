@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 import os
 from app.v1 import router as v1_router
+from fastapi.middleware.cors import CORSMiddleware
 
 
 load_dotenv()
@@ -20,6 +21,12 @@ for var in required_env_vars:
         exit(1)
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(v1_router, prefix="/v1", tags=["v1"])
 
