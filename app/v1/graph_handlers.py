@@ -50,14 +50,21 @@ async def create_graph_handler(file_locations, model):
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Failed to load pdf files {e}")
     
-    graph_documents = await create_graph(text_chunks[:3], llm) # TODO: remove slicing
+    graph_documents = []
+    batch_size = 3
+    
+    for i in range(0, len(text_chunks), batch_size):
+        batch = text_chunks[i:i+batch_size]
+        batch_result = await create_graph(batch, llm)
+        graph_documents.extend(batch_result)        
+        
     
     graph, _ = write_graph(graph_documents)
 
     disambiguated_graph = disambiguate(graph, llm)
 
     embedding_llm = OpenAIEmbeddings()
-    embedding_db = create_embedding(text_chunks[:5], embedding_llm) # TODO: remove slicing
+    embedding_db = create_embedding(text_chunks, embedding_llm)
 
     return {
         "success": True
