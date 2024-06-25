@@ -46,7 +46,7 @@ async def create_graph_handler(file_locations, model):
 
     try:
         for file in file_locations:
-            text_chunks.extend(chunk_pdf(file))        
+            text_chunks.extend(chunk_pdf(file)[:3]) #TODO: Remove this limit  
     except ValueError as e:
         raise HTTPException(status_code=400, detail="Failed to load pdf files {e}")
     
