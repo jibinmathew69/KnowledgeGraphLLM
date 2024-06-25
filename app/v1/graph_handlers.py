@@ -87,10 +87,17 @@ def get_answer(query: str, model: Model):
         )
 
     graph = Neo4jGraph()
-    embedding_db = Neo4jVector.from_existing_index(
-        OpenAIEmbeddings(),
-        "Chunk"  
-    )
+
+    try:
+        embedding_db = Neo4jVector.from_existing_index(
+            OpenAIEmbeddings(),
+            "Chunk"  
+        )
+    except Exception as e:
+        return {
+            "success": False,
+            "error": "Failed to load graph, please create a graph"
+        }
 
     graph_chain = graph_qa_chain(llm, graph)
     embedding_chain = embedding_qa_chain(llm, embedding_db)
