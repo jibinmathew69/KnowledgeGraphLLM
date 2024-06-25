@@ -48,7 +48,7 @@ async def ask(
     return get_answer(query, model)
 
 
-@graph_router.post("/clear_db")
+@graph_router.delete("/clear_db")
 async def clear_db():
     """
     Clear the graph database
