@@ -99,3 +99,10 @@ def get_answer(query: str, model: Model):
         }
     }
 
+
+def delete_graph():
+    graph = Neo4jGraph()
+    graph.query("MATCH (n) DETACH DELETE n")
+    return {
+        "success": True
+    }

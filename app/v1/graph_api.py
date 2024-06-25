@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from typing import List, Optional
 from .graph_validators import Model, PdfURLs, parse_urls_form, validate_files
 from .graph_handlers import write_files_to_disk, create_graph_handler
-from .graph_handlers import get_answer
+from .graph_handlers import get_answer, delete_graph
 
 
 
@@ -46,3 +46,11 @@ async def ask(
     """
     
     return get_answer(query, model)
+
+
+@graph_router.post("/clear_db")
+async def clear_db():
+    """
+    Clear the graph database
+    """
+    return delete_graph()    
